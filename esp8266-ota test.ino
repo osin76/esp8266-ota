@@ -1,19 +1,18 @@
 #include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
-// LCD
+// LCD 2004A
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 // WiFi
 const char* ssid = "Tan Tam Phat";
 const char* password = "0888788088";
 
-// Firmware URL
-const char* firmware_url = "https://raw.githubusercontent.com/abc/esp8266-ota/main/firmware.bin";
+// Link firmware (bạn thay bằng link GitHub của bạn)
+const char* firmware_url = "https://raw.githubusercontent.com/USERNAME/REPO/main/firmware.bin";
 
 void setup() {
   Serial.begin(115200);
@@ -28,10 +27,8 @@ void setup() {
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.print(".");
   }
 
-  // ===== HIEN THI IP =====
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("WiFi OK");
@@ -42,11 +39,11 @@ void setup() {
 
   delay(2000);
 
-  // ===== HTTPS CLIENT =====
+  // ===== CLIENT HTTPS =====
   WiFiClientSecure client;
   client.setInsecure();
 
-  // ===== CALLBACK HIEN THI % =====
+  // ===== HIEN THI % UPDATE =====
   ESPhttpUpdate.onProgress([](int cur, int total) {
     int percent = (cur * 100) / total;
 
@@ -57,8 +54,6 @@ void setup() {
     lcd.print("Tien do: ");
     lcd.print(percent);
     lcd.print("%   ");
-
-    Serial.printf("Update: %d%%\n", percent);
   });
 
   ESPhttpUpdate.onStart([]() {
@@ -79,24 +74,10 @@ void setup() {
     lcd.print("Update loi!");
   });
 
-  // ===== BAT DAU OTA =====
+  // ===== BAT DAU UPDATE =====
   t_httpUpdate_return ret = ESPhttpUpdate.update(client, firmware_url);
 
-  // ===== SAU UPDATE =====
-  lcd.clear();
-
-  if (ret == HTTP_UPDATE_FAILED) {
-    lcd.setCursor(0,0);
-    lcd.print("Update LOI");
-    delay(3000);
-  } 
-  else if (ret == HTTP_UPDATE_NO_UPDATES) {
-    lcd.setCursor(0,0);
-    lcd.print("Khong co ban moi");
-    delay(2000);
-  }
-
-  // ===== MAN HINH CHAO =====
+  // ===== SAU KHI XONG =====
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Chao Diep");
@@ -109,5 +90,4 @@ void setup() {
   lcd.print(WiFi.localIP());
 }
 
-void loop() {
-}
+void loop() {}
