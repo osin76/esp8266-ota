@@ -12,7 +12,7 @@ const char* ssid = "Tan Tam Phat";
 const char* password = "0888788088";
 
 // Link firmware (bạn thay bằng link GitHub của bạn)
-const char* firmware_url = "https://raw.githubusercontent.com/USERNAME/REPO/main/firmware.bin";
+const char* firmware_url = "https://github.com/osin76/esp8266-ota/blob/main/esp8266-ota%20test.ino";
 
 void setup() {
   Serial.begin(115200);
